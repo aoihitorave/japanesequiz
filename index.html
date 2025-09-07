@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ことわざ・故事成語・慣用句クイズ - 中学受験対策</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Hiragino Sans', 'Yu Gothic', 'Noto Sans JP', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            height: 8px;
+            border-radius: 4px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            background: white;
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 4px;
+        }
+        
+        .quiz-content {
+            padding: 40px;
+        }
+        
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #FF6B6B;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .question-container {
+            background: #fff;
+            border: 2px solid #f0f0f0;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 25px;
+        }
+        
+        .question-type {
+            display: inline-block;
+            background: #4ECDC4;
+            color: white;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+        
+        .question-text {
+            font-size: 1.6em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+        
+        .options {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .option {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            padding: 18px 25px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+            position: relative;
+        }
+        
+        .option:hover {
+            background: #e3f2fd;
+            border-color: #2196f3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.2);
+        }
+        
+        .option.selected {
+            background: #e3f2fd;
+            border-color: #2196f3;
+        }
+        
+        .option.correct {
+            background: #e8f5e8;
+            border-color: #4caf50;
+            animation: correctPulse 0.6s ease;
+        }
+        
+        .option.incorrect {
+            background: #ffebee;
+            border-color: #f44336;
+            animation: shake 0.5s ease;
+        }
+        
+        .explanation {
+            background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 20px;
+            border-left: 4px solid #4ECDC4;
+            display: none;
+        }
+        
+        .explanation.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+        
+        .explanation h4 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .results {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .results h2 {
+            font-size: 2.5em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .final-score {
+            font-size: 4em;
+            font-weight: bold;
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 20px 0;
+        }
+        
+        .performance-message {
+            font-size: 1.3em;
+            color: #666;
+            margin: 20px 0;
+        }
+        
+        @keyframes correctPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
+            20%, 40%, 60%, 80% { transform: translateX(3px); }
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 768px) {
+            .container { margin: 10px; }
+            .quiz-content { padding: 20px; }
+            .header h1 { font-size: 2em; }
+            .question-text { font-size: 1.3em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎌 ことわざ・故事成語・慣用句クイズ</h1>
+            <p>中学受験対策 - 知識を深めて合格を目指そう！</p>
+            <div class="progress-container">
+                <div class="progress" id="progressBar"></div>
+            </div>
+        </div>
+        
+        <div class="quiz-content" id="quizContent">
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <div class="stat-number" id="currentQ">1</div>
+                    <div class="stat-label">問題番号</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="totalQ">10</div>
+                    <div class="stat-label">全問題数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="score">0</div>
+                    <div class="stat-label">正解数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="accuracy">0%</div>
+                    <div class="stat-label">正答率</div>
+                </div>
+            </div>
+            
+            <div class="question-container">
+                <div class="question-type" id="questionType">ことわざ</div>
+                <div class="question-text" id="questionText">
+                    「石の上にも三年」の意味として最も適切なものはどれですか？
+                </div>
+                
+                <div class="options" id="optionsContainer">
+                    <!-- 選択肢は動的に生成 -->
+                </div>
+                
+                <div class="explanation" id="explanation">
+                    <!-- 解説は動的に生成 -->
+                </div>
+            </div>
+            
+            <div class="buttons">
+                <button class="btn btn-primary" id="submitBtn" onclick="checkAnswer()">回答する</button>
+                <button class="btn btn-secondary" id="nextBtn" onclick="nextQuestion()" style="display:none;">次の問題</button>
+                <button class="btn btn-secondary" id="restartBtn" onclick="restartQuiz()" style="display:none;">最初から</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // クイズデータ（拡張可能な構造）
+        const quizDatabase = [
+            {
+                id: 1,
+                type: "ことわざ",
+                phrase: "石の上にも三年",
+                question: "「石の上にも三年」の意味として最も適切なものはどれですか？",
+                options: [
+                    "辛抱強く続ければ必ず報われる",
+                    "石は長い時間をかけて形成される", 
+                    "三年間は石の上で修行する",
+                    "重いものでも時間をかけて運ぶ"
+                ],
+                correct: 0,
+                explanation: "「石の上にも三年」は、冷たい石の上でも三年座り続けていれば温まるという意味から、どんなに辛いことでも辛抱強く続けていれば、いつかは成功するという教えです。努力と継続の大切さを説いたことわざです。"
+            },
+            {
+                id: 2,
+                type: "ことわざ",
+                phrase: "猿も木から落ちる",
+                question: "「猿も木から落ちる」が表している意味は？",
+                options: [
+                    "猿は本当に木から落ちることがある",
+                    "上手な人でも時には失敗することがある", 
+                    "高いところは危険である",
+                    "動物も人間と同じように失敗する"
+                ],
+                correct: 1,
+                explanation: "「猿も木から落ちる」は、木登りが得意な猿でさえ時には木から落ちることがあるという意味から、どんなに上手な人や専門家でも、時には失敗やミスをすることがあるという教えです。完璧な人はいないということを表しています。"
+            },
+            {
+                id: 3,
+                type: "故事成語",
+                phrase: "四面楚歌",
+                question: "「四面楚歌」の意味として正しいものは？",
+                options: [
+                    "四方から美しい歌声が聞こえること",
+                    "敵や反対者に囲まれて孤立した状態", 
+                    "多くの人に支持されること",
+                    "四つの方向から攻撃を受けること"
+                ],
+                correct: 1,
+                explanation: "「四面楚歌」は、中国の項羽が劉邦軍に包囲された際、四方から故郷楚の歌が聞こえ、味方がいないことを悟った故事に由来します。周囲がすべて敵や反対者で、全く味方がいない孤立した状況を表します。"
+            },
+            {
+                id: 4,
+                type: "故事成語",
+                phrase: "温故知新",
+                question: "「温故知新」の意味として適切なものは？",
+                options: [
+                    "古いものを大切にすること",
+                    "過去の出来事を忘れること",
+                    "古い事柄を研究して新しい知識を得ること",
+                    "新しい技術だけを追求すること"
+                ],
+                correct: 2,
+                explanation: "「温故知新」は『論語』に由来する言葉で、古い事柄をよく調べ研究して、そこから新しい知識や道理を発見することを意味します。過去の知恵を学ぶことで、現在や未来に活かせる新しい理解を得るという教えです。"
+            },
+            {
+                id: 5,
+                type: "慣用句",
+                phrase: "顔から火が出る",
+                question: "「顔から火が出る」の意味は？",
+                options: [
+                    "怒りが爆発する",
+                    "恥ずかしくてたまらない", 
+                    "体調が悪い",
+                    "興奮している"
+                ],
+                correct: 1,
+                explanation: "「顔から火が出る」は、恥ずかしさのあまり顔が真っ赤になる様子を火が出るほどと大げさに表現した慣用句です。非常に恥ずかしい思いをしている状態を表します。"
+            },
+            {
+                id: 6,
+                type: "慣用句",
+                phrase: "腕が鳴る",
+                question: "「腕が鳴る」が表す意味は？",
+                options: [
+                    "腕に痛みがある",
+                    "実力を発揮したくてうずうずする", 
+                    "緊張で手が震える",
+                    "筋肉が発達している"
+                ],
+                correct: 1,
+                explanation: "「腕が鳴る」は、自分の得意分野で力を試したくて意欲が湧いてくる様子を表す慣用句です。腕前を披露したい、実力を発揮したいという気持ちが高まっている状態を意味します。"
+            },
+            {
+                id: 7,
+                type: "故事成語",
+                phrase: "背水の陣",
+                question: "「背水の陣」の意味として正しいものは？",
+                options: [
+                    "水辺に陣を構えること",
+                    "決死の覚悟で物事に臨むこと", 
+                    "敵に背を向けて戦うこと",
+                    "水の供給を断つ戦術"
+                ],
+                correct: 1,
+                explanation: "「背水の陣」は、中国の韓信が川を背にして退路を断ち、兵士たちを決死の覚悟で戦わせた故事に由来します。後に退けない状況に身を置いて、決死の覚悟で物事に臨むことを意味します。"
+            },
+            {
+                id: 8,
+                type: "ことわざ",
+                phrase: "井の中の蛙大海を知らず",
+                question: "「井の中の蛙大海を知らず」が教える内容は？",
+                options: [
+                    "蛙は海を見たことがない",
+                    "狭い世界にいると広い世界のことがわからない", 
+                    "井戸の中は安全な場所である",
+                    "小さな動物は大きな世界を理解できない"
+                ],
+                correct: 1,
+                explanation: "「井の中の蛙大海を知らず」は、井戸の中にいる蛙は井戸の外の大海の存在を知らないという意味から、狭い世界や環境にいる人は、広い世界のことを知らず、見識が狭いことのたとえです。"
+            }
+        ];
+
+        // ゲーム状態管理
+        let gameState = {
+            questions: [],
+            currentIndex: 0,
+            score: 0,
+            selectedAnswer: null,
+            answered: false,
+            startTime: null
+        };
+
+        // 学習履歴管理（localStorage使用）
+        const STORAGE_KEY = 'kotowaza_quiz_progress';
+        
+        function saveProgress(questionId, correct, timeSpent) {
+            const progress = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+            const key = questionId.toString();
+            
+            if (!progress[key]) {
+                progress[key] = { attempts: 0, correct: 0, totalTime: 0 };
+            }
+            
+            progress[key].attempts++;
+            if (correct) progress[key].correct++;
+            progress[key].totalTime += timeSpent;
+            progress[key].lastAttempt = Date.now();
+            
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+        }
+        
+        function getQuestionWeight(question) {
+            const progress = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+            const key = question.id.toString();
+            const data = progress[key];
+            
+            if (!data) return 1.0; // 初回は標準重み
+            
+            const accuracy = data.correct / data.attempts;
+            const recency = Date.now() - (data.lastAttempt || 0);
+            const daysSince = recency / (1000 * 60 * 60 * 24);
+            
+            // 正答率が低い、または最近間違えた問題の重みを上げる
+            let weight = 1.0;
+            if (accuracy < 0.7) weight += 0.8;
+            if (daysSince < 7 && accuracy < 0.5) weight += 0.5;
+            
+            return Math.max(0.3, Math.min(2.0, weight));
+        }
+
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function selectQuestions(count = 8) {
+            // 重み付きサンプリングで問題を選択
+            const weights = quizDatabase.map(q => getQuestionWeight(q));
+            const totalWeight = weights.reduce((sum, w) => sum + w, 0);
+            
+            const selected = [];
+            const available = [...quizDatabase];
+            
+            for (let i = 0; i < Math.min(count, available.length); i++) {
+                let random = Math.random() * totalWeight;
+                let selectedIndex = 0;
+                
+                for (let j = 0; j < available.length; j++) {
+                    random -= getQuestionWeight(available[j]);
+                    if (random <= 0) {
+                        selectedIndex = j;
+                        break;
+                    }
+                }
+                
+                selected.push(available[selectedIndex]);
+                available.splice(selectedIndex, 1);
+            }
+            
+            return shuffleArray(selected);
+        }
+
+        function initializeQuiz() {
+            gameState.questions = selectQuestions(8);
+            gameState.currentIndex = 0;
+            gameState.score = 0;
+            gameState.answered = false;
+            gameState.startTime = Date.now();
+            
+            updateStats();
+            loadQuestion();
+        }
+
+        function updateStats() {
+            const current = gameState.currentIndex + 1;
+            const total = gameState.questions.length;
+            const accuracy = gameState.currentIndex > 0 ? 
+                Math.round((gameState.score / gameState.currentIndex) * 100) : 0;
+            
+            document.getElementById('currentQ').textContent = current;
+            document.getElementById('totalQ').textContent = total;
+            document.getElementById('score').textContent = gameState.score;
+            document.getElementById('accuracy').textContent = accuracy + '%';
+            
+            const progress = (current / total) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function loadQuestion() {
+            if (gameState.currentIndex >= gameState.questions.length) {
+                showResults();
+                return;
+            }
+            
+            const question = gameState.questions[gameState.currentIndex];
+            
+            document.getElementById('questionType').textContent = question.type;
+            document.getElementById('questionText').textContent = question.question;
+            
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const div = document.createElement('div');
+                div.className = 'option';
+                div.textContent = option;
+                div.onclick = () => selectOption(index, div);
+                container.appendChild(div);
+            });
+            
+            // 状態リセット
+            gameState.selectedAnswer = null;
+            gameState.answered = false;
+            document.getElementById('explanation').classList.remove('show');
+            document.getElementById('submitBtn').style.display = 'inline-block';
+            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('nextBtn').style.display = 'none';
+        }
+
+        function selectOption(index, element) {
+            if (gameState.answered) return;
+            
+            // 既存の選択を解除
+            document.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // 新しい選択を設定
+            element.classList.add('selected');
+            gameState.selectedAnswer = index;
+            document.getElementById('submitBtn').disabled = false;
+        }
+
+        function checkAnswer() {
+            if (gameState.selectedAnswer === null || gameState.answered) return;
+            
+            gameState.answered = true;
+            const question = gameState.questions[gameState.currentIndex];
+            const correct = gameState.selectedAnswer === question.correct;
+            const timeSpent = Date.now() - gameState.startTime;
+            
+            // 結果表示
+            const options = document.querySelectorAll('.option');
+            options.forEach((option, index) => {
+                if (index === question.correct) {
+                    option.classList.add('correct');
+                } else if (index === gameState.selectedAnswer && !correct) {
+                    option.classList.add('incorrect');
+                }
+                option.style.pointerEvents = 'none';
+            });
+            
+            // スコア更新
+            if (correct) {
+                gameState.score++;
+            }
+            
+            // 学習履歴保存
+            saveProgress(question.id, correct, timeSpent);
+            
+            // 解説表示
+            const explanation = document.getElementById('explanation');
+            explanation.innerHTML = `
+                <h4>📚 解説</h4>
+                <p><strong>${correct ? '✅ 正解！' : '❌ 不正解'}</strong></p>
+                <p><strong>正答：</strong>${question.options[question.correct]}</p>
+                <p>${question.explanation}</p>
+            `;
+            explanation.classList.add('show');
+            
+            // ボタン切り替え
+            document.getElementById('submitBtn').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'inline-block';
+            
+            updateStats();
+        }
+
+        function nextQuestion() {
+            gameState.currentIndex++;
+            gameState.startTime = Date.now();
+            loadQuestion();
+        }
+
+        function showResults() {
+            const accuracy = Math.round((gameState.score / gameState.questions.length) * 100);
+            let message = '';
+            
+            if (accuracy >= 90) {
+                message = '🎉 完璧です！素晴らしい知識をお持ちですね！';
+            } else if (accuracy >= 70) {
+                message = '👏 よくできました！この調子で頑張りましょう！';
+            } else if (accuracy >= 50) {
+                message = '📖 もう少しです！復習して再チャレンジしてみましょう！';
+            } else {
+                message = '💪 基礎から復習して、もう一度挑戦してみましょう！';
+            }
+            
+            document.getElementById('quizContent').innerHTML = `
+                <div class="results">
+                    <h2>🏆 クイズ結果</h2>
+                    <div class="final-score">${gameState.score} / ${gameState.questions.length}</div>
+                    <div class="performance-message">正答率: ${accuracy}%</div>
+                    <div class="performance-message">${message}</div>
+                    <div class="buttons">
+                        <button class="btn btn-primary" onclick="initializeQuiz()">もう一度挑戦</button>
+                        <button class="btn btn-secondary" onclick="location.reload()">最初に戻る</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function restartQuiz() {
+            initializeQuiz();
+        }
+
+        // 初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeQuiz();
+        });
+    </script>
+</body>
+</html>
