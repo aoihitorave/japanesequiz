@@ -81,7 +81,7 @@
         }
         
         .screen.active {
-            display: block;
+            display: block !important;
         }
         
         .screen h2 {
@@ -179,6 +179,7 @@
         /* クイズ画面 */
         .quiz-content {
             padding: 40px;
+            display: none;
         }
         
         .stats-bar {
@@ -265,11 +266,13 @@
         .option.correct {
             background: #e8f5e8;
             border-color: #4caf50;
+            animation: correctPulse 0.6s ease;
         }
         
         .option.incorrect {
             background: #ffebee;
             border-color: #f44336;
+            animation: shake 0.5s ease;
         }
         
         .explanation {
@@ -283,6 +286,7 @@
         
         .explanation.show {
             display: block;
+            animation: slideIn 0.5s ease;
         }
         
         .explanation h4 {
@@ -363,13 +367,31 @@
             line-height: 1.5;
         }
         
-        /* ローディング */
-        .loading {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        /* ローディング - 修正版 */
+        .loading-message {
+            padding: 60px;
             font-size: 1.4em;
             color: #666;
+            text-align: center;
+            display: none;  /* ★重要: デフォルトで非表示 */
+        }
+        
+        /* アニメーション */
+        @keyframes correctPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
+            20%, 40%, 60%, 80% { transform: translateX(3px); }
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         /* レスポンシブ */
@@ -398,7 +420,7 @@
             </div>
         </div>
         
-        <!-- カテゴリー選択画面 -->
+        <!-- カテゴリー選択画面（初期表示） -->
         <div class="screen active" id="categoryScreen">
             <h2>📚 学習したいカテゴリーを選択してください</h2>
             <div class="selection-buttons">
@@ -451,12 +473,12 @@
         </div>
         
         <!-- ローディング画面 -->
-        <div class="screen loading" id="loadingScreen">
+        <div class="screen loading-message" id="loadingScreen">
             📚 問題データを読み込んでいます...
         </div>
         
         <!-- クイズ画面 -->
-        <div class="quiz-content" id="quizScreen" style="display:none;">
+        <div class="quiz-content" id="quizScreen">
             <div class="stats-bar">
                 <div class="stat-item">
                     <div class="stat-number" id="currentQ">1</div>
@@ -526,15 +548,15 @@
         let quizStartTime = null;
         let timerInterval = null;
         
-        // ★修正されたゲーム状態管理
+        // ゲーム状態管理
         let gameState = {
             questions: [],
             currentIndex: 0,
             score: 0,
             selectedAnswer: null,
             answered: false,
-            answeredCount: 0,  // ★重要: 実際に回答した問題数
-            wrongAnswers: []   // 間違えた問題の記録
+            answeredCount: 0,
+            wrongAnswers: []
         };
 
         // データローダークラス
@@ -542,7 +564,6 @@
             static async loadQuestions(category, difficulty) {
                 try {
                     if (difficulty === 'random') {
-                        // ランダム選択の場合、全難易度から読み込み
                         const difficulties = ['beginner', 'intermediate', 'advanced'];
                         const allQuestions = [];
                         
@@ -591,19 +612,25 @@
             return shuffled.slice(0, Math.min(count, shuffled.length));
         }
 
-        // 画面遷移
+        // 画面遷移（修正版）
         function showScreen(screenId) {
-            document.querySelectorAll('.screen, .quiz-content').forEach(screen => {
+            console.log(`画面遷移: ${screenId}`);
+            
+            // すべての画面を非表示
+            document.querySelectorAll('.screen').forEach(screen => {
                 screen.classList.remove('active');
-                screen.style.display = 'none';
             });
             
-            const targetScreen = document.getElementById(screenId);
-            if (targetScreen) {
-                if (screenId === 'quizScreen') {
-                    targetScreen.style.display = 'block';
-                } else {
-                    targetScreen.classList.add('active');
+            // クイズ画面も非表示
+            document.getElementById('quizScreen').style.display = 'none';
+            
+            // 対象画面を表示
+            if (screenId === 'quizScreen') {
+                document.getElementById('quizScreen').style.display = 'block';
+            } else {
+                const target = document.getElementById(screenId);
+                if (target) {
+                    target.classList.add('active');
                 }
             }
         }
@@ -648,7 +675,7 @@
                 gameState.currentIndex = 0;
                 gameState.score = 0;
                 gameState.answered = false;
-                gameState.answeredCount = 0;  // ★重要: 初期化
+                gameState.answeredCount = 0;
                 gameState.wrongAnswers = [];
                 
                 showScreen('quizScreen');
@@ -663,12 +690,11 @@
             }
         }
 
-        // ★修正された統計表示関数
+        // 統計表示関数
         function updateStats() {
             const current = gameState.currentIndex + 1;
             const total = gameState.questions.length;
             
-            // ★重要な修正: 正答率は回答済み問題数で計算
             const accuracy = gameState.answeredCount > 0 ? 
                 Math.round((gameState.score / gameState.answeredCount) * 100) : 0;
             
@@ -704,7 +730,6 @@
                 container.appendChild(div);
             });
             
-            // 状態リセット
             gameState.selectedAnswer = null;
             gameState.answered = false;
             document.getElementById('explanation').classList.remove('show');
@@ -725,17 +750,15 @@
             document.getElementById('submitBtn').disabled = false;
         }
 
-        // ★修正された回答チェック関数
         function checkAnswer() {
             if (gameState.selectedAnswer === null || gameState.answered) return;
             
             gameState.answered = true;
-            gameState.answeredCount++;  // ★重要: 回答済み問題数をインクリメント
+            gameState.answeredCount++;
             
             const question = gameState.questions[gameState.currentIndex];
             const correct = gameState.selectedAnswer === question.correct;
             
-            // 結果表示
             const options = document.querySelectorAll('.option');
             options.forEach((option, index) => {
                 if (index === question.correct) {
@@ -746,11 +769,9 @@
                 option.style.pointerEvents = 'none';
             });
             
-            // スコア更新
             if (correct) {
                 gameState.score++;
             } else {
-                // 間違えた問題を記録
                 gameState.wrongAnswers.push({
                     question: question.question,
                     userAnswer: question.options[gameState.selectedAnswer],
@@ -759,7 +780,6 @@
                 });
             }
             
-            // 解説表示
             const explanation = document.getElementById('explanation');
             explanation.innerHTML = `
                 <h4>📚 解説</h4>
@@ -769,11 +789,10 @@
             `;
             explanation.classList.add('show');
             
-            // ボタン切り替え
             document.getElementById('submitBtn').style.display = 'none';
             document.getElementById('nextBtn').style.display = 'inline-block';
             
-            updateStats();  // ★重要: 回答後に統計を更新
+            updateStats();
         }
 
         function nextQuestion() {
@@ -781,7 +800,6 @@
             loadQuestion();
         }
 
-        // 結果表示
         function showResults() {
             const accuracy = Math.round((gameState.score / gameState.questions.length) * 100);
             const elapsedTime = Date.now() - quizStartTime;
@@ -792,7 +810,6 @@
             document.getElementById('accuracyResult').textContent = accuracy + '%';
             document.getElementById('timeResult').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
             
-            // 間違えた問題の表示
             const wrongAnswersList = document.getElementById('wrongAnswersList');
             const wrongAnswersSection = document.getElementById('wrongAnswers');
             
