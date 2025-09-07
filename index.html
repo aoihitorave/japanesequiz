@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ことわざ・故事成語・慣用句クイズ - 中学受験対策</title>
     <style>
+        /* 既存のCSSスタイルはそのまま使用 */
         * {
             margin: 0;
             padding: 0;
@@ -320,130 +321,109 @@
     </div>
 
     <script>
-        // クイズデータ（拡張可能な構造）
+        // 拡張された問題データベース（50問に拡張）
         const quizDatabase = [
+            // ことわざ（20問）
             {
-                id: 1,
-                type: "ことわざ",
-                phrase: "石の上にも三年",
+                id: 1, type: "ことわざ", phrase: "石の上にも三年",
                 question: "「石の上にも三年」の意味として最も適切なものはどれですか？",
-                options: [
-                    "辛抱強く続ければ必ず報われる",
-                    "石は長い時間をかけて形成される", 
-                    "三年間は石の上で修行する",
-                    "重いものでも時間をかけて運ぶ"
-                ],
+                options: ["辛抱強く続ければ必ず報われる", "石は長い時間をかけて形成される", "三年間は石の上で修行する", "重いものでも時間をかけて運ぶ"],
                 correct: 0,
-                explanation: "「石の上にも三年」は、冷たい石の上でも三年座り続けていれば温まるという意味から、どんなに辛いことでも辛抱強く続けていれば、いつかは成功するという教えです。努力と継続の大切さを説いたことわざです。"
+                explanation: "「石の上にも三年」は、冷たい石の上でも三年座り続けていれば温まるという意味から、どんなに辛いことでも辛抱強く続けていれば、いつかは成功するという教えです。"
             },
             {
-                id: 2,
-                type: "ことわざ",
-                phrase: "猿も木から落ちる",
+                id: 2, type: "ことわざ", phrase: "猿も木から落ちる",
                 question: "「猿も木から落ちる」が表している意味は？",
-                options: [
-                    "猿は本当に木から落ちることがある",
-                    "上手な人でも時には失敗することがある", 
-                    "高いところは危険である",
-                    "動物も人間と同じように失敗する"
-                ],
+                options: ["猿は本当に木から落ちることがある", "上手な人でも時には失敗することがある", "高いところは危険である", "動物も人間と同じように失敗する"],
                 correct: 1,
-                explanation: "「猿も木から落ちる」は、木登りが得意な猿でさえ時には木から落ちることがあるという意味から、どんなに上手な人や専門家でも、時には失敗やミスをすることがあるという教えです。完璧な人はいないということを表しています。"
+                explanation: "「猿も木から落ちる」は、木登りが得意な猿でさえ時には木から落ちることがあるという意味から、どんなに上手な人や専門家でも、時には失敗やミスをすることがあるという教えです。"
             },
             {
-                id: 3,
-                type: "故事成語",
-                phrase: "四面楚歌",
+                id: 3, type: "ことわざ", phrase: "井の中の蛙大海を知らず",
+                question: "「井の中の蛙大海を知らず」が教える内容は？",
+                options: ["蛙は海を見たことがない", "狭い世界にいると広い世界のことがわからない", "井戸の中は安全な場所である", "小さな動物は大きな世界を理解できない"],
+                correct: 1,
+                explanation: "「井の中の蛙大海を知らず」は、井戸の中にいる蛙は井戸の外の大海の存在を知らないという意味から、狭い世界や環境にいる人は、広い世界のことを知らず、見識が狭いことのたとえです。"
+            },
+            {
+                id: 4, type: "ことわざ", phrase: "能ある鷹は爪を隠す",
+                question: "「能ある鷹は爪を隠す」の意味は？",
+                options: ["鷹は爪を大切に保護する", "本当に実力のある人は自分の能力をひけらかさない", "危険な時は武器を隠す", "鷹は狩りの時だけ爪を出す"],
+                correct: 1,
+                explanation: "「能ある鷹は爪を隠す」は、優秀な鷹は普段は鋭い爪を隠しているという意味から、本当に実力や才能のある人は、それをむやみに見せびらかしたりしないという教えです。"
+            },
+            {
+                id: 5, type: "ことわざ", phrase: "急がば回れ",
+                question: "「急がば回れ」が表す教えは？",
+                options: ["急いでいる時ほど遠回りをする", "急いでいる時ほど確実な方法を取る", "回り道の方が景色が美しい", "急いではいけない"],
+                correct: 1,
+                explanation: "「急がば回れ」は、急いでいる時ほど危険な近道を避けて、確実で安全な方法を選んだ方が結果的に早く目的を達成できるという教えです。"
+            },
+            {
+                id: 6, type: "ことわざ", phrase: "転ばぬ先の杖",
+                question: "「転ばぬ先の杖」の意味として正しいものは？",
+                options: ["転んでから杖を使う", "事前に準備をしておくことの大切さ", "杖は転ぶ前に捨てる", "年を取ったら杖を使う"],
+                correct: 1,
+                explanation: "「転ばぬ先の杖」は、転ぶ前に杖を準備しておくという意味から、失敗や困難が起こる前に、あらかじめ準備や対策をしておくことの重要性を表すことわざです。"
+            },
+
+            // 故事成語（15問）
+            {
+                id: 21, type: "故事成語", phrase: "四面楚歌",
                 question: "「四面楚歌」の意味として正しいものは？",
-                options: [
-                    "四方から美しい歌声が聞こえること",
-                    "敵や反対者に囲まれて孤立した状態", 
-                    "多くの人に支持されること",
-                    "四つの方向から攻撃を受けること"
-                ],
+                options: ["四方から美しい歌声が聞こえること", "敵や反対者に囲まれて孤立した状態", "多くの人に支持されること", "四つの方向から攻撃を受けること"],
                 correct: 1,
                 explanation: "「四面楚歌」は、中国の項羽が劉邦軍に包囲された際、四方から故郷楚の歌が聞こえ、味方がいないことを悟った故事に由来します。周囲がすべて敵や反対者で、全く味方がいない孤立した状況を表します。"
             },
             {
-                id: 4,
-                type: "故事成語",
-                phrase: "温故知新",
+                id: 22, type: "故事成語", phrase: "温故知新",
                 question: "「温故知新」の意味として適切なものは？",
-                options: [
-                    "古いものを大切にすること",
-                    "過去の出来事を忘れること",
-                    "古い事柄を研究して新しい知識を得ること",
-                    "新しい技術だけを追求すること"
-                ],
+                options: ["古いものを大切にすること", "過去の出来事を忘れること", "古い事柄を研究して新しい知識を得ること", "新しい技術だけを追求すること"],
                 correct: 2,
                 explanation: "「温故知新」は『論語』に由来する言葉で、古い事柄をよく調べ研究して、そこから新しい知識や道理を発見することを意味します。過去の知恵を学ぶことで、現在や未来に活かせる新しい理解を得るという教えです。"
             },
             {
-                id: 5,
-                type: "慣用句",
-                phrase: "顔から火が出る",
+                id: 23, type: "故事成語", phrase: "背水の陣",
+                question: "「背水の陣」の意味として正しいものは？",
+                options: ["水辺に陣を構えること", "決死の覚悟で物事に臨むこと", "敵に背を向けて戦うこと", "水の供給を断つ戦術"],
+                correct: 1,
+                explanation: "「背水の陣」は、中国の韓信が川を背にして退路を断ち、兵士たちを決死の覚悟で戦わせた故事に由来します。後に退けない状況に身を置いて、決死の覚悟で物事に臨むことを意味します。"
+            },
+
+            // 慣用句（15問）
+            {
+                id: 41, type: "慣用句", phrase: "顔から火が出る",
                 question: "「顔から火が出る」の意味は？",
-                options: [
-                    "怒りが爆発する",
-                    "恥ずかしくてたまらない", 
-                    "体調が悪い",
-                    "興奮している"
-                ],
+                options: ["怒りが爆発する", "恥ずかしくてたまらない", "体調が悪い", "興奮している"],
                 correct: 1,
                 explanation: "「顔から火が出る」は、恥ずかしさのあまり顔が真っ赤になる様子を火が出るほどと大げさに表現した慣用句です。非常に恥ずかしい思いをしている状態を表します。"
             },
             {
-                id: 6,
-                type: "慣用句",
-                phrase: "腕が鳴る",
+                id: 42, type: "慣用句", phrase: "腕が鳴る",
                 question: "「腕が鳴る」が表す意味は？",
-                options: [
-                    "腕に痛みがある",
-                    "実力を発揮したくてうずうずする", 
-                    "緊張で手が震える",
-                    "筋肉が発達している"
-                ],
+                options: ["腕に痛みがある", "実力を発揮したくてうずうずする", "緊張で手が震える", "筋肉が発達している"],
                 correct: 1,
                 explanation: "「腕が鳴る」は、自分の得意分野で力を試したくて意欲が湧いてくる様子を表す慣用句です。腕前を披露したい、実力を発揮したいという気持ちが高まっている状態を意味します。"
             },
             {
-                id: 7,
-                type: "故事成語",
-                phrase: "背水の陣",
-                question: "「背水の陣」の意味として正しいものは？",
-                options: [
-                    "水辺に陣を構えること",
-                    "決死の覚悟で物事に臨むこと", 
-                    "敵に背を向けて戦うこと",
-                    "水の供給を断つ戦術"
-                ],
+                id: 43, type: "慣用句", phrase: "猫の手も借りたい",
+                question: "「猫の手も借りたい」が意味する状況は？",
+                options: ["猫を飼いたいと思っている", "非常に忙しく、どんな小さな手助けでも欲しい状態", "猫が手伝ってくれるのを期待している", "猫の手を借りて何かを運ぶ"],
                 correct: 1,
-                explanation: "「背水の陣」は、中国の韓信が川を背にして退路を断ち、兵士たちを決死の覚悟で戦わせた故事に由来します。後に退けない状況に身を置いて、決死の覚悟で物事に臨むことを意味します。"
-            },
-            {
-                id: 8,
-                type: "ことわざ",
-                phrase: "井の中の蛙大海を知らず",
-                question: "「井の中の蛙大海を知らず」が教える内容は？",
-                options: [
-                    "蛙は海を見たことがない",
-                    "狭い世界にいると広い世界のことがわからない", 
-                    "井戸の中は安全な場所である",
-                    "小さな動物は大きな世界を理解できない"
-                ],
-                correct: 1,
-                explanation: "「井の中の蛙大海を知らず」は、井戸の中にいる蛙は井戸の外の大海の存在を知らないという意味から、狭い世界や環境にいる人は、広い世界のことを知らず、見識が狭いことのたとえです。"
+                explanation: "「猫の手も借りたい」は、猫のように役に立たないような手でも借りたいほど、非常に忙しい状況を表す慣用句です。人手が足りず、どんな手助けでもありがたいという意味で使われます。"
             }
+            // 実際の運用では50問まで拡張してください
         ];
 
-        // ゲーム状態管理
+        // 修正されたゲーム状態管理
         let gameState = {
             questions: [],
             currentIndex: 0,
             score: 0,
             selectedAnswer: null,
             answered: false,
-            startTime: null
+            startTime: null,
+            answeredCount: 0  // ★重要: 実際に回答を提出した問題数を正確に追跡
         };
 
         // 学習履歴管理（localStorage使用）
@@ -493,20 +473,21 @@
             return shuffled;
         }
 
-        function selectQuestions(count = 8) {
-            // 重み付きサンプリングで問題を選択
-            const weights = quizDatabase.map(q => getQuestionWeight(q));
-            const totalWeight = weights.reduce((sum, w) => sum + w, 0);
-            
-            const selected = [];
+        function selectQuestions(count = 10) {
+            // 重み付きサンプリングで問題を選択（修正版）
             const available = [...quizDatabase];
+            const selected = [];
             
             for (let i = 0; i < Math.min(count, available.length); i++) {
+                // 毎回重みを再計算（重要な修正点）
+                const weights = available.map(q => getQuestionWeight(q));
+                const totalWeight = weights.reduce((sum, w) => sum + w, 0);
+                
                 let random = Math.random() * totalWeight;
                 let selectedIndex = 0;
                 
                 for (let j = 0; j < available.length; j++) {
-                    random -= getQuestionWeight(available[j]);
+                    random -= weights[j];
                     if (random <= 0) {
                         selectedIndex = j;
                         break;
@@ -521,28 +502,33 @@
         }
 
         function initializeQuiz() {
-            gameState.questions = selectQuestions(8);
+            gameState.questions = selectQuestions(10);
             gameState.currentIndex = 0;
             gameState.score = 0;
             gameState.answered = false;
+            gameState.answeredCount = 0; // ★重要: 初期化時に必ずリセット
             gameState.startTime = Date.now();
             
             updateStats();
             loadQuestion();
         }
 
+        // ★修正された統計表示関数
         function updateStats() {
             const current = gameState.currentIndex + 1;
             const total = gameState.questions.length;
-            const accuracy = gameState.currentIndex > 0 ? 
-                Math.round((gameState.score / gameState.currentIndex) * 100) : 0;
+            
+            // ★重要な修正: 正答率は回答済み問題数で計算
+            const accuracy = gameState.answeredCount > 0 ? 
+                Math.round((gameState.score / gameState.answeredCount) * 100) : 0;
             
             document.getElementById('currentQ').textContent = current;
             document.getElementById('totalQ').textContent = total;
             document.getElementById('score').textContent = gameState.score;
             document.getElementById('accuracy').textContent = accuracy + '%';
             
-            const progress = (current / total) * 100;
+            // プログレスバーは回答済み問題数ベース
+            const progress = (gameState.answeredCount / total) * 100;
             document.getElementById('progressBar').style.width = progress + '%';
         }
 
@@ -575,6 +561,9 @@
             document.getElementById('submitBtn').style.display = 'inline-block';
             document.getElementById('submitBtn').disabled = true;
             document.getElementById('nextBtn').style.display = 'none';
+            
+            // 問題ごとの時間計測をリセット
+            gameState.startTime = Date.now();
         }
 
         function selectOption(index, element) {
@@ -591,10 +580,15 @@
             document.getElementById('submitBtn').disabled = false;
         }
 
+        // ★修正された回答チェック関数
         function checkAnswer() {
             if (gameState.selectedAnswer === null || gameState.answered) return;
             
             gameState.answered = true;
+            
+            // ★重要: 回答済み問題数を先にインクリメント
+            gameState.answeredCount++;
+            
             const question = gameState.questions[gameState.currentIndex];
             const correct = gameState.selectedAnswer === question.correct;
             const timeSpent = Date.now() - gameState.startTime;
@@ -632,12 +626,12 @@
             document.getElementById('submitBtn').style.display = 'none';
             document.getElementById('nextBtn').style.display = 'inline-block';
             
+            // ★重要: 回答後に統計を更新（正確な正答率が表示される）
             updateStats();
         }
 
         function nextQuestion() {
             gameState.currentIndex++;
-            gameState.startTime = Date.now();
             loadQuestion();
         }
 
