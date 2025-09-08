@@ -535,6 +535,26 @@
 
         // ★修正版データローダークラス（配列形式のJSONに対応）
         class QuizDataLoader {
+            static extractQuestions(data) {
+                // データから問題配列を抽出する汎用メソッド
+                if (Array.isArray(data)) {
+                    console.log('配列形式のデータを検出');
+                    return data;
+                } else if (data && data.questions && Array.isArray(data.questions)) {
+                    console.log('questions形式のデータを検出');
+                    return data.questions;
+                } else if (data && data.items && Array.isArray(data.items)) {
+                    console.log('items形式のデータを検出');
+                    return data.items;
+                } else if (data && data.data && Array.isArray(data.data)) {
+                    console.log('data形式のデータを検出');
+                    return data.data;
+                } else {
+                    console.error('予期しないデータ形式:', data);
+                    return [];
+                }
+            }
+            
             static async loadQuestions(category, difficulty) {
                 try {
                     console.log(`読み込み開始: ${category}/${difficulty}`);
@@ -548,13 +568,13 @@
                                 const response = await fetch(`./data/${category}/${diff}.json`);
                                 if (response.ok) {
                                     const data = await response.json();
-                                    console.log(`${diff}データ:`, data);
+                                    console.log(`${diff}データ取得成功`);
                                     
-                                    // ★配列形式とオブジェクト形式の両方に対応
-                                    if (Array.isArray(data)) {
-                                        allQuestions.push(...data);
-                                    } else if (data && data.questions) {
-                                        allQuestions.push(...data.questions);
+                                    // 汎用メソッドで問題を抽出
+                                    const questions = this.extractQuestions(data);
+                                    if (questions.length > 0) {
+                                        allQuestions.push(...questions);
+                                        console.log(`${diff}から${questions.length}問追加`);
                                     }
                                 }
                             } catch (error) {
@@ -566,7 +586,7 @@
                             throw new Error('ランダム用のデータが見つかりません');
                         }
                         
-                        console.log(`ランダム問題数: ${allQuestions.length}`);
+                        console.log(`ランダム問題総数: ${allQuestions.length}問`);
                         return allQuestions;
                         
                     } else {
@@ -577,19 +597,13 @@
                         }
                         
                         const data = await response.json();
-                        console.log('読み込んだデータ:', data);
+                        console.log('データ取得成功');
                         
-                        // ★配列形式とオブジェクト形式の両方に対応
-                        if (Array.isArray(data)) {
-                            console.log('配列形式のデータを検出');
-                            return data;
-                        } else if (data && data.questions) {
-                            console.log('オブジェクト形式のデータを検出');
-                            return data.questions;
-                        } else {
-                            console.error('予期しないデータ形式:', data);
-                            return [];
-                        }
+                        // 汎用メソッドで問題を抽出
+                        const questions = this.extractQuestions(data);
+                        console.log(`問題数: ${questions.length}問`);
+                        
+                        return questions;
                     }
                     
                 } catch (error) {
@@ -898,3 +912,4 @@
     </script>
 </body>
 </html>
+
