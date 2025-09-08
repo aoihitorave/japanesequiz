@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ことわざ・故事成語・慣用句マスターへの道</title>
     <style>
+        /* 既存のCSSをそのまま使用 */
         * {
             margin: 0;
             padding: 0;
@@ -73,7 +74,6 @@
             display: none;
         }
         
-        /* 共通スタイル */
         .screen {
             padding: 50px 40px;
             text-align: center;
@@ -137,7 +137,6 @@
             line-height: 1.4;
         }
         
-        /* ボタン */
         .buttons {
             display: flex;
             gap: 20px;
@@ -176,7 +175,6 @@
             transform: none;
         }
         
-        /* クイズ画面 */
         .quiz-content {
             padding: 40px;
             display: none;
@@ -266,13 +264,11 @@
         .option.correct {
             background: #e8f5e8;
             border-color: #4caf50;
-            animation: correctPulse 0.6s ease;
         }
         
         .option.incorrect {
             background: #ffebee;
             border-color: #f44336;
-            animation: shake 0.5s ease;
         }
         
         .explanation {
@@ -286,7 +282,6 @@
         
         .explanation.show {
             display: block;
-            animation: slideIn 0.5s ease;
         }
         
         .explanation h4 {
@@ -295,7 +290,6 @@
             font-size: 1.3em;
         }
         
-        /* 結果画面 */
         .results-header {
             text-align: center;
             margin-bottom: 40px;
@@ -367,34 +361,14 @@
             line-height: 1.5;
         }
         
-        /* ローディング - 修正版 */
         .loading-message {
             padding: 60px;
             font-size: 1.4em;
             color: #666;
             text-align: center;
-            display: none;  /* ★重要: デフォルトで非表示 */
+            display: none;
         }
         
-        /* アニメーション */
-        @keyframes correctPulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-            100% { transform: scale(1); }
-        }
-        
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
-            20%, 40%, 60%, 80% { transform: translateX(3px); }
-        }
-        
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* レスポンシブ */
         @media (max-width: 768px) {
             .container { margin: 10px; }
             .screen { padding: 30px 20px; }
@@ -559,10 +533,12 @@
             wrongAnswers: []
         };
 
-        // データローダークラス
+        // ★修正版データローダークラス（配列形式のJSONに対応）
         class QuizDataLoader {
             static async loadQuestions(category, difficulty) {
                 try {
+                    console.log(`読み込み開始: ${category}/${difficulty}`);
+                    
                     if (difficulty === 'random') {
                         const difficulties = ['beginner', 'intermediate', 'advanced'];
                         const allQuestions = [];
@@ -572,7 +548,14 @@
                                 const response = await fetch(`./data/${category}/${diff}.json`);
                                 if (response.ok) {
                                     const data = await response.json();
-                                    allQuestions.push(...data.questions);
+                                    console.log(`${diff}データ:`, data);
+                                    
+                                    // ★配列形式とオブジェクト形式の両方に対応
+                                    if (Array.isArray(data)) {
+                                        allQuestions.push(...data);
+                                    } else if (data && data.questions) {
+                                        allQuestions.push(...data.questions);
+                                    }
                                 }
                             } catch (error) {
                                 console.warn(`${category}/${diff}.jsonの読み込みをスキップ:`, error);
@@ -583,6 +566,7 @@
                             throw new Error('ランダム用のデータが見つかりません');
                         }
                         
+                        console.log(`ランダム問題数: ${allQuestions.length}`);
                         return allQuestions;
                         
                     } else {
@@ -593,12 +577,24 @@
                         }
                         
                         const data = await response.json();
-                        return data.questions;
+                        console.log('読み込んだデータ:', data);
+                        
+                        // ★配列形式とオブジェクト形式の両方に対応
+                        if (Array.isArray(data)) {
+                            console.log('配列形式のデータを検出');
+                            return data;
+                        } else if (data && data.questions) {
+                            console.log('オブジェクト形式のデータを検出');
+                            return data.questions;
+                        } else {
+                            console.error('予期しないデータ形式:', data);
+                            return [];
+                        }
                     }
                     
                 } catch (error) {
                     console.error('問題データの読み込みに失敗:', error);
-                    alert(`問題データの読み込みに失敗しました。\n${category}/${difficulty}.jsonファイルが正しく配置されているか確認してください。`);
+                    alert(`問題データの読み込みに失敗しました。\n${category}/${difficulty}.jsonファイルが正しく配置されているか確認してください。\n\nエラー詳細: ${error.message}`);
                     return [];
                 }
             }
@@ -612,7 +608,7 @@
             return shuffled.slice(0, Math.min(count, shuffled.length));
         }
 
-        // 画面遷移（修正版）
+        // 画面遷移
         function showScreen(screenId) {
             console.log(`画面遷移: ${screenId}`);
             
@@ -677,6 +673,8 @@
                 gameState.answered = false;
                 gameState.answeredCount = 0;
                 gameState.wrongAnswers = [];
+                
+                console.log('クイズ開始:', gameState.questions);
                 
                 showScreen('quizScreen');
                 startTimer();
@@ -823,7 +821,7 @@
                     const div = document.createElement('div');
                     div.className = 'wrong-item';
                     div.innerHTML = `
-                        <div class="wrong-question">問題${index + 1}: ${wrong.question}</div>
+                        <div class="wrong-question">問題: ${wrong.question}</div>
                         <div class="wrong-details">
                             <p><strong>あなたの回答:</strong> ${wrong.userAnswer}</p>
                             <p><strong>正答:</strong> ${wrong.correctAnswer}</p>
