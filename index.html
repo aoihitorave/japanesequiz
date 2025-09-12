@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>国語マスターへの道</title>
+    
+    <!-- PWA対応 -->
+    <link rel="manifest" href="./manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="apple-touch-icon" href="./icon-192.png">
+    
+    <!-- テーマカラー -->
+    <meta name="theme-color" content="#FF6B6B">
+    
     <style>
         * {
             margin: 0;
@@ -754,23 +764,6 @@
 
         // データローダークラス
         class QuizDataLoader {
-            static extractQuestions(data) {
-                let rawQuestions = [];
-                
-                if (Array.isArray(data)) {
-                    rawQuestions = data;
-                } else if (data && data.questions && Array.isArray(data.questions)) {
-                    rawQuestions = data.questions;
-                } else if (data && data.items && Array.isArray(data.items)) {
-                    rawQuestions = data.items;
-                } else {
-                    console.error('予期しないデータ形式:', data);
-                    return [];
-                }
-                
-                return rawQuestions;
-            }
-            
             static async loadQuestions(category, difficulty) {
                 try {
                     console.log(`読み込み開始: ${category}/${difficulty}`);
@@ -784,10 +777,9 @@
                                 const response = await fetch(`./data/${category}/${diff}.json`);
                                 if (response.ok) {
                                     const data = await response.json();
-                                    const questions = this.extractQuestions(data);
-                                    if (questions.length > 0) {
-                                        allQuestions.push(...questions);
-                                        console.log(`${diff}から${questions.length}問追加`);
+                                    if (data.items && Array.isArray(data.items)) {
+                                        allQuestions.push(...data.items);
+                                        console.log(`${diff}から${data.items.length}問追加`);
                                     }
                                 }
                             } catch (error) {
@@ -809,11 +801,14 @@
                         }
                         
                         const data = await response.json();
-                        const questions = this.extractQuestions(data);
                         
-                        console.log(`問題数: ${questions.length}問`);
-                        
-                        return questions;
+                        if (data.items && Array.isArray(data.items)) {
+                            console.log(`問題数: ${data.items.length}問`);
+                            return data.items;
+                        } else {
+                            console.error('items形式ではありません:', data);
+                            return [];
+                        }
                     }
                     
                 } catch (error) {
@@ -831,7 +826,6 @@
             const shuffled = [...questions].sort(() => Math.random() - 0.5);
             
             if (isSuddenDeath) {
-                // サドンデスモードは全問題を返す
                 return shuffled;
             }
             
@@ -971,14 +965,22 @@
             let displayQuestion = question.question || '';
             
             if (question.phrase) {
-                if (!displayQuestion.includes(question.phrase)) {
+                // phraseから読み仮名を除去（括弧内を削除）して確認
+                const cleanPhrase = question.phrase.replace(/（[^）]*）/g, '').trim();
+                
+                // すでにphraseが含まれているかチェック
+                const phraseInQuestion = displayQuestion.includes(question.phrase);
+                const cleanPhraseInQuestion = displayQuestion.includes(cleanPhrase);
+                
+                // どちらの形式でも含まれていない場合のみ処理
+                if (!phraseInQuestion && !cleanPhraseInQuestion) {
                     const patterns = [
-                        /次のことわざ/g,
-                        /次の慣用句/g,
-                        /次の故事成語/g,
-                        /このことわざ/g,
-                        /この慣用句/g,
-                        /この故事成語/g
+                        /次のことわざ/,
+                        /次の慣用句/,
+                        /次の故事成語/,
+                        /このことわざ/,
+                        /この慣用句/,
+                        /この故事成語/
                     ];
                     
                     let replaced = false;
@@ -1003,10 +1005,8 @@
                             displayQuestion = `「${question.phrase}」の意味として最も適切なものを選びなさい。`;
                         }
                     }
-                } else {
-                    if (!displayQuestion.includes(`「${question.phrase}」`)) {
-                        displayQuestion = displayQuestion.replace(question.phrase, `「${question.phrase}」`);
-                    }
+                } else if (phraseInQuestion && !displayQuestion.includes(`「${question.phrase}」`)) {
+                    displayQuestion = displayQuestion.replace(question.phrase, `「${question.phrase}」`);
                 }
             }
             
@@ -1084,7 +1084,6 @@
                     explanation: question.explanation
                 });
                 
-                // サドンデスモードで間違えた場合
                 if (isSuddenDeath) {
                     setTimeout(() => {
                         stopTimer();
@@ -1112,7 +1111,6 @@
         function nextQuestion() {
             gameState.currentIndex++;
             
-            // サドンデスモードで問題がなくなったら新しい問題を追加
             if (isSuddenDeath && gameState.currentIndex >= gameState.questions.length) {
                 if (allQuestionsPool.length > gameState.questions.length) {
                     const remainingQuestions = allQuestionsPool.filter(q => 
@@ -1122,13 +1120,11 @@
                         const nextQuestion = remainingQuestions[Math.floor(Math.random() * remainingQuestions.length)];
                         gameState.questions.push(nextQuestion);
                     } else {
-                        // 全問正解
                         stopTimer();
                         showResults();
                         return;
                     }
                 } else {
-                    // 全問正解
                     stopTimer();
                     showResults();
                     return;
@@ -1149,7 +1145,6 @@
             const minutes = Math.floor(elapsedTime / 60000);
             const seconds = Math.floor((elapsedTime % 60000) / 1000);
             
-            // サドンデスモードで全問正解の場合
             if (isSuddenDeath && gameState.wrongAnswers.length === 0 && gameState.answeredCount === allQuestionsPool.length) {
                 const masterMessage = document.getElementById('masterMessage');
                 masterMessage.textContent = `🎊 おめでとう！あなたは${categoryName}マスター！`;
@@ -1193,7 +1188,6 @@
             showScreen('resultsScreen');
         }
 
-        // 中断確認
         function confirmQuit() {
             if (confirm('クイズを中断してトップページに戻りますか？')) {
                 stopTimer();
@@ -1203,7 +1197,6 @@
 
         // イベントリスナー
         document.addEventListener('DOMContentLoaded', function() {
-            // カテゴリー選択
             document.querySelectorAll('[data-category]').forEach(btn => {
                 btn.addEventListener('click', function() {
                     document.querySelectorAll('[data-category]').forEach(b => b.classList.remove('selected'));
@@ -1213,7 +1206,6 @@
                 });
             });
             
-            // カテゴリー次へボタン
             document.getElementById('categoryNextBtn').addEventListener('click', function() {
                 document.getElementById('difficultyTitle').textContent = 
                     `${categoryNames[selectedCategory]}の難易度を選択`;
@@ -1221,7 +1213,6 @@
                 showScreen('difficultyScreen');
             });
             
-            // 難易度選択
             document.querySelectorAll('[data-level]').forEach(btn => {
                 btn.addEventListener('click', function() {
                     document.querySelectorAll('[data-level]').forEach(b => b.classList.remove('selected'));
@@ -1231,7 +1222,6 @@
                 });
             });
             
-            // 戻るボタン
             document.getElementById('backToCategoryBtn').addEventListener('click', function() {
                 showScreen('categoryScreen');
                 document.querySelectorAll('[data-level]').forEach(b => b.classList.remove('selected'));
@@ -1239,17 +1229,11 @@
                 document.getElementById('startQuizBtn').style.display = 'none';
             });
             
-            // クイズ開始ボタン
             document.getElementById('startQuizBtn').addEventListener('click', initializeQuiz);
-            
-            // 回答・次へボタン
             document.getElementById('submitBtn').addEventListener('click', checkAnswer);
             document.getElementById('nextBtn').addEventListener('click', nextQuestion);
-            
-            // 中断ボタン
             document.getElementById('quitBtn').addEventListener('click', confirmQuit);
             
-            // 結果画面のボタン
             document.getElementById('backToTopBtn').addEventListener('click', function() {
                 location.reload();
             });
@@ -1258,6 +1242,26 @@
                 initializeQuiz();
             });
         });
+    </script>
+    
+    <!-- Service Workerの登録 -->
+    <script>
+    // Service Workerの登録
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js')
+                .then(registration => console.log('SW登録成功:', registration))
+                .catch(err => console.log('SW登録失敗:', err));
+        });
+    }
+
+    // インストールプロンプト
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        // インストールボタンを表示する場合はここに処理を追加
+    });
     </script>
 </body>
 </html>
