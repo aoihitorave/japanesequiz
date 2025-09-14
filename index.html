@@ -173,6 +173,49 @@
             color: #e53e3e;
         }
         
+        .install-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .install-section h3 {
+            color: #495057;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #dee2e6;
+        }
+        
+        .install-section h4 {
+            color: #6c757d;
+            font-size: 0.95em;
+            margin: 15px 0 10px 0;
+            font-weight: 600;
+        }
+        
+        .install-section ol,
+        .install-section ul {
+            margin: 10px 0 10px 20px;
+            font-size: 0.85em;
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        .install-section li {
+            margin-bottom: 5px;
+        }
+        
+        .install-section code {
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+        
         .selection-buttons {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -256,6 +299,11 @@
         
         .btn-info {
             background: #17a2b8;
+            color: white;
+        }
+        
+        .btn-success {
+            background: #28a745;
             color: white;
         }
         
@@ -631,16 +679,20 @@
                 font-size: 1.2em;
             }
             
-            .app-info-section {
+            .app-info-section,
+            .install-section {
                 padding: 15px;
             }
             
-            .app-info-section h3 {
+            .app-info-section h3,
+            .install-section h3 {
                 font-size: 1em;
             }
             
             .app-info-section p,
-            .app-info-section ul {
+            .app-info-section ul,
+            .install-section ol,
+            .install-section ul {
                 font-size: 0.85em;
             }
         }
@@ -687,23 +739,6 @@
         <div class="screen active" id="categoryScreen">
             <h2>カテゴリーを選択</h2>
             
-            <!-- アプリ情報セクション -->
-            <div class="app-info-section">
-                <h3>📖 このアプリについて</h3>
-                <p>
-                    日本語の美しい表現を楽しく学べる学習アプリです。
-                    子供から大人まで、幅広い年齢層の方にご利用いただけます。
-                </p>
-                <ul>
-                    <li>ことわざ・慣用句・故事成語を収録</li>
-                    <li>難易度別の問題で段階的に学習</li>
-                    <li>サドンデスモードで腕試し</li>
-                </ul>
-                <div class="privacy-badge">
-                    🔒 完全オフライン・個人情報収集なし
-                </div>
-            </div>
-            
             <div class="selection-buttons">
                 <div class="selection-btn" data-category="kotowaza">
                     <div class="selection-name-with-icon">🌸 ことわざ</div>
@@ -728,6 +763,7 @@
             
             <div class="buttons">
                 <button class="btn btn-primary" id="categoryNextBtn" style="display:none;">次へ</button>
+                <button class="btn btn-success" id="installBtn" aria-label="インストール方法を表示">📱 インストール方法</button>
                 <button class="btn btn-info" id="aboutBtn" aria-label="アプリ情報を表示">ℹ️ アプリ情報</button>
             </div>
         </div>
@@ -763,9 +799,107 @@
             </div>
         </div>
         
+        <!-- インストール方法画面 -->
+        <div class="screen" id="installScreen">
+            <h2>インストール方法</h2>
+            
+            <div class="install-section">
+                <h3>📱 スマートフォンへのインストール</h3>
+                
+                <h4>iPhone/iPad (iOS Safari)</h4>
+                <ol>
+                    <li>Safariでこのページを開く</li>
+                    <li>画面下部の共有ボタン <code>□↑</code> をタップ</li>
+                    <li>「ホーム画面に追加」を選択</li>
+                    <li>名前を確認して「追加」をタップ</li>
+                </ol>
+                
+                <h4>Android (Chrome)</h4>
+                <ol>
+                    <li>Chromeでこのページを開く</li>
+                    <li>右上のメニュー <code>⋮</code> をタップ</li>
+                    <li>「ホーム画面に追加」または「アプリをインストール」を選択</li>
+                    <li>「インストール」をタップ</li>
+                </ol>
+            </div>
+            
+            <div class="install-section">
+                <h3>💻 パソコンへのインストール</h3>
+                
+                <h4>Windows/Mac (Chrome/Edge)</h4>
+                <ol>
+                    <li>Chrome または Edge でこのページを開く</li>
+                    <li>アドレスバー右側のインストールアイコン <code>⊕</code> をクリック</li>
+                    <li>「インストール」をクリック</li>
+                    <li>デスクトップやスタートメニューからアプリを起動可能</li>
+                </ol>
+            </div>
+            
+            <div class="install-section">
+                <h3>🔄 アプリの更新方法</h3>
+                
+                <h4>自動更新</h4>
+                <p>アプリを開くと自動的に最新版をチェックし、バックグラウンドで更新されます。</p>
+                
+                <h4>手動更新</h4>
+                <ul>
+                    <li><strong>スマートフォン：</strong>画面を下にスワイプして更新</li>
+                    <li><strong>パソコン：</strong><code>Ctrl+F5</code> (Mac: <code>Cmd+Shift+R</code>)</li>
+                </ul>
+            </div>
+            
+            <div class="install-section">
+                <h3>🗑️ アンインストール方法</h3>
+                
+                <h4>iPhone/iPad</h4>
+                <ul>
+                    <li>ホーム画面のアプリアイコンを長押し</li>
+                    <li>「ブックマークを削除」または「×」マークをタップ</li>
+                </ul>
+                
+                <h4>Android</h4>
+                <ul>
+                    <li>ホーム画面のアプリアイコンを長押し</li>
+                    <li>「アンインストール」を選択</li>
+                </ul>
+                
+                <h4>Windows</h4>
+                <ul>
+                    <li>スタートメニューでアプリを右クリック</li>
+                    <li>「アンインストール」を選択</li>
+                </ul>
+                
+                <h4>Mac</h4>
+                <ul>
+                    <li>Launchpadでアプリアイコンを長押し</li>
+                    <li>×マークをクリック</li>
+                </ul>
+            </div>
+            
+            <div class="buttons">
+                <button class="btn btn-secondary" id="backFromInstallBtn">戻る</button>
+            </div>
+        </div>
+        
         <!-- アプリ情報画面 -->
         <div class="screen" id="aboutScreen">
             <h2>アプリ情報</h2>
+            
+            <div class="app-info-section">
+                <h3>📖 このアプリについて</h3>
+                <p>
+                    日本語の美しい表現を楽しく学べる学習アプリです。
+                    子供から大人まで、幅広い年齢層の方にご利用いただけます。
+                </p>
+                <ul>
+                    <li>ことわざ・慣用句・故事成語を収録</li>
+                    <li>難易度別の問題で段階的に学習</li>
+                    <li>サドンデスモードで腕試し</li>
+                </ul>
+                <div class="privacy-badge">
+                    🔒 完全オフライン・個人情報収集なし
+                </div>
+            </div>
             
             <div class="app-info-section">
                 <h3>🔒 プライバシーについて</h3>
@@ -806,7 +940,7 @@
                 <h3>⚙️ 技術情報</h3>
                 <p>
                     <strong>バージョン:</strong> 1.0.0<br>
-                    <strong>最終更新:</strong> 2024年12月<br>
+                    <strong>最終更新:</strong> 2025年9月<br>
                     <strong>動作環境:</strong> モダンブラウザ（Chrome, Safari, Firefox, Edge）<br>
                     <strong>PWA対応:</strong> ホーム画面に追加してアプリとして利用可能
                 </p>
@@ -900,7 +1034,7 @@
         // アプリケーション情報
         const APP_INFO = {
             version: '1.0.0',
-            lastUpdated: '2024-12',
+            lastUpdated: '2025-09',
             privacyFeatures: [
                 '完全オフライン動作',
                 '個人情報収集なし',
@@ -1409,6 +1543,15 @@
                     `${categoryNames[selectedCategory]}の難易度を選択`;
                 
                 showScreen('difficultyScreen');
+            });
+            
+            // インストール方法ボタン
+            document.getElementById('installBtn').addEventListener('click', function() {
+                showScreen('installScreen');
+            });
+            
+            document.getElementById('backFromInstallBtn').addEventListener('click', function() {
+                showScreen('categoryScreen');
             });
             
             // アプリ情報ボタン
