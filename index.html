@@ -110,6 +110,69 @@
             margin-bottom: 20px;
         }
         
+        /* アプリ情報セクションのスタイル */
+        .app-info-section {
+            background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+            border: 1px solid #d0e8ff;
+        }
+        
+        .app-info-section h3 {
+            color: #2196f3;
+            font-size: 1.1em;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .app-info-section p {
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 8px;
+        }
+        
+        .app-info-section ul {
+            margin: 10px 0 10px 20px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        
+        .app-info-section li {
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+        
+        .privacy-badge {
+            display: inline-block;
+            background: #4caf50;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        
+        .disclaimer-section {
+            background: #fff5f5;
+            border: 1px solid #fed7d7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-size: 0.85em;
+            color: #666;
+            text-align: left;
+        }
+        
+        .disclaimer-section strong {
+            color: #e53e3e;
+        }
+        
         .selection-buttons {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -188,6 +251,11 @@
         
         .btn-danger {
             background: #dc3545;
+            color: white;
+        }
+        
+        .btn-info {
+            background: #17a2b8;
             color: white;
         }
         
@@ -562,6 +630,19 @@
             .stat-number {
                 font-size: 1.2em;
             }
+            
+            .app-info-section {
+                padding: 15px;
+            }
+            
+            .app-info-section h3 {
+                font-size: 1em;
+            }
+            
+            .app-info-section p,
+            .app-info-section ul {
+                font-size: 0.85em;
+            }
         }
         
         @media (max-width: 480px) {
@@ -605,6 +686,24 @@
         <!-- カテゴリー選択画面 -->
         <div class="screen active" id="categoryScreen">
             <h2>カテゴリーを選択</h2>
+            
+            <!-- アプリ情報セクション -->
+            <div class="app-info-section">
+                <h3>📖 このアプリについて</h3>
+                <p>
+                    日本語の美しい表現を楽しく学べる学習アプリです。
+                    子供から大人まで、幅広い年齢層の方にご利用いただけます。
+                </p>
+                <ul>
+                    <li>ことわざ・慣用句・故事成語を収録</li>
+                    <li>難易度別の問題で段階的に学習</li>
+                    <li>サドンデスモードで腕試し</li>
+                </ul>
+                <div class="privacy-badge">
+                    🔒 完全オフライン・個人情報収集なし
+                </div>
+            </div>
+            
             <div class="selection-buttons">
                 <div class="selection-btn" data-category="kotowaza">
                     <div class="selection-name-with-icon">🌸 ことわざ</div>
@@ -619,8 +718,17 @@
                     <div class="selection-desc">中国の故事に由来する言葉</div>
                 </div>
             </div>
+            
+            <!-- 免責事項 -->
+            <div class="disclaimer-section">
+                <strong>ご利用にあたって</strong><br>
+                本アプリは学習支援を目的としており、学校教育の代替となるものではありません。
+                内容の正確性には万全を期していますが、参考としてご活用ください。
+            </div>
+            
             <div class="buttons">
                 <button class="btn btn-primary" id="categoryNextBtn" style="display:none;">次へ</button>
+                <button class="btn btn-info" id="aboutBtn" aria-label="アプリ情報を表示">ℹ️ アプリ情報</button>
             </div>
         </div>
         
@@ -652,6 +760,67 @@
             <div class="buttons">
                 <button class="btn btn-primary" id="startQuizBtn" style="display:none;">開始</button>
                 <button class="btn btn-secondary" id="backToCategoryBtn">戻る</button>
+            </div>
+        </div>
+        
+        <!-- アプリ情報画面 -->
+        <div class="screen" id="aboutScreen">
+            <h2>アプリ情報</h2>
+            
+            <div class="app-info-section">
+                <h3>🔒 プライバシーについて</h3>
+                <p>
+                    本アプリは完全にオフラインで動作し、個人情報の収集・送信は一切行いません。
+                </p>
+                <ul>
+                    <li>学習履歴は端末内にのみ保存</li>
+                    <li>外部サーバーとの通信なし</li>
+                    <li>広告・トラッキングなし</li>
+                    <li>アカウント登録不要</li>
+                </ul>
+                <p>
+                    安心してご利用いただけます。
+                </p>
+            </div>
+            
+            <div class="app-info-section">
+                <h3>📚 収録内容</h3>
+                <p>各カテゴリーに難易度別の問題を収録しています。</p>
+                <ul>
+                    <li><strong>ことわざ</strong>：生活の知恵や教訓を含む伝統的な表現</li>
+                    <li><strong>慣用句</strong>：日常会話で使われる特別な意味を持つ表現</li>
+                    <li><strong>故事成語</strong>：中国の歴史や文学に由来する四字熟語など</li>
+                </ul>
+            </div>
+            
+            <div class="app-info-section">
+                <h3>🎮 学習モード</h3>
+                <ul>
+                    <li><strong>初級・中級・上級</strong>：レベルに応じた10問のクイズ</li>
+                    <li><strong>ランダム</strong>：全難易度から無作為に10問出題</li>
+                    <li><strong>サドンデス</strong>：1問でも間違えたら終了の緊張感あるモード</li>
+                </ul>
+            </div>
+            
+            <div class="app-info-section">
+                <h3>⚙️ 技術情報</h3>
+                <p>
+                    <strong>バージョン:</strong> 1.0.0<br>
+                    <strong>最終更新:</strong> 2024年12月<br>
+                    <strong>動作環境:</strong> モダンブラウザ（Chrome, Safari, Firefox, Edge）<br>
+                    <strong>PWA対応:</strong> ホーム画面に追加してアプリとして利用可能
+                </p>
+            </div>
+            
+            <div class="disclaimer-section">
+                <strong>免責事項</strong><br>
+                本アプリは学習支援を目的として提供されており、内容の正確性には万全を期していますが、
+                学習の参考としてご活用ください。本アプリの利用により生じたいかなる損害についても、
+                制作者は責任を負いかねます。
+            </div>
+            
+            <div class="buttons">
+                <button class="btn btn-secondary" id="backFromAboutBtn">戻る</button>
             </div>
         </div>
         
@@ -689,9 +858,9 @@
             </div>
             
             <div class="buttons">
-                <button class="btn btn-primary" id="submitBtn">回答</button>
-                <button class="btn btn-secondary" id="nextBtn" style="display:none;">次へ</button>
-                <button class="btn btn-danger" id="quitBtn">中断</button>
+                <button class="btn btn-primary" id="submitBtn" aria-label="回答を確定">回答</button>
+                <button class="btn btn-secondary" id="nextBtn" style="display:none;" aria-label="次の問題へ">次へ</button>
+                <button class="btn btn-danger" id="quitBtn" aria-label="クイズを中断">中断</button>
             </div>
         </div>
         
@@ -721,13 +890,25 @@
             </div>
             
             <div class="buttons">
-                <button class="btn btn-primary" id="retryBtn">再挑戦</button>
-                <button class="btn btn-secondary" id="backToTopBtn">トップへ</button>
+                <button class="btn btn-primary" id="retryBtn" aria-label="同じ設定で再挑戦">再挑戦</button>
+                <button class="btn btn-secondary" id="backToTopBtn" aria-label="トップページへ戻る">トップへ</button>
             </div>
         </div>
     </div>
 
     <script>
+        // アプリケーション情報
+        const APP_INFO = {
+            version: '1.0.0',
+            lastUpdated: '2024-12',
+            privacyFeatures: [
+                '完全オフライン動作',
+                '個人情報収集なし',
+                'トラッキングなし',
+                'アカウント不要'
+            ]
+        };
+        
         // グローバル変数
         let selectedCategory = null;
         let selectedDifficulty = null;
@@ -762,7 +943,7 @@
             'sudden': 'サドンデス'
         };
 
-        // データローダークラス
+        // データローダークラス（エラーハンドリング強化版）
         class QuizDataLoader {
             static async loadQuestions(category, difficulty) {
                 try {
@@ -813,9 +994,23 @@
                     
                 } catch (error) {
                     console.error('問題データの読み込みに失敗:', error);
-                    alert(`問題データの読み込みに失敗しました。`);
+                    this.showUserFriendlyError(error);
                     return [];
                 }
+            }
+            
+            static showUserFriendlyError(error) {
+                let message = '問題データの読み込みに失敗しました。';
+                
+                if (error.message.includes('404')) {
+                    message += '\n選択したカテゴリーのデータが見つかりません。';
+                } else if (error.message.includes('network')) {
+                    message += '\nネットワーク接続を確認してください。';
+                } else {
+                    message += '\nしばらく時間をおいて再度お試しください。';
+                }
+                
+                alert(message);
             }
         }
 
@@ -1025,6 +1220,8 @@
                 const div = document.createElement('div');
                 div.className = 'option';
                 div.textContent = option;
+                div.setAttribute('role', 'button');
+                div.setAttribute('aria-label', `選択肢${index + 1}: ${option}`);
                 div.onclick = () => selectOption(index, div);
                 container.appendChild(div);
             });
@@ -1197,6 +1394,7 @@
 
         // イベントリスナー
         document.addEventListener('DOMContentLoaded', function() {
+            // カテゴリー選択
             document.querySelectorAll('[data-category]').forEach(btn => {
                 btn.addEventListener('click', function() {
                     document.querySelectorAll('[data-category]').forEach(b => b.classList.remove('selected'));
@@ -1213,6 +1411,16 @@
                 showScreen('difficultyScreen');
             });
             
+            // アプリ情報ボタン
+            document.getElementById('aboutBtn').addEventListener('click', function() {
+                showScreen('aboutScreen');
+            });
+            
+            document.getElementById('backFromAboutBtn').addEventListener('click', function() {
+                showScreen('categoryScreen');
+            });
+            
+            // 難易度選択
             document.querySelectorAll('[data-level]').forEach(btn => {
                 btn.addEventListener('click', function() {
                     document.querySelectorAll('[data-level]').forEach(b => b.classList.remove('selected'));
@@ -1229,11 +1437,13 @@
                 document.getElementById('startQuizBtn').style.display = 'none';
             });
             
+            // クイズ操作
             document.getElementById('startQuizBtn').addEventListener('click', initializeQuiz);
             document.getElementById('submitBtn').addEventListener('click', checkAnswer);
             document.getElementById('nextBtn').addEventListener('click', nextQuestion);
             document.getElementById('quitBtn').addEventListener('click', confirmQuit);
             
+            // 結果画面
             document.getElementById('backToTopBtn').addEventListener('click', function() {
                 location.reload();
             });
@@ -1241,6 +1451,40 @@
             document.getElementById('retryBtn').addEventListener('click', function() {
                 initializeQuiz();
             });
+            
+            // キーボードショートカット
+            document.addEventListener('keydown', function(e) {
+                if (document.getElementById('quizScreen').style.display === 'block') {
+                    if (e.key === 'Enter') {
+                        if (!gameState.answered && gameState.selectedAnswer !== null) {
+                            checkAnswer();
+                        } else if (gameState.answered) {
+                            nextQuestion();
+                        }
+                    } else if (e.key >= '1' && e.key <= '4') {
+                        const index = parseInt(e.key) - 1;
+                        const options = document.querySelectorAll('.option');
+                        if (options[index] && !gameState.answered) {
+                            selectOption(index, options[index]);
+                        }
+                    }
+                }
+            });
+        });
+        
+        // パフォーマンス最適化：問題データのプリロード
+        window.addEventListener('load', async () => {
+            // バックグラウンドでデータをプリロード（エラーは無視）
+            const categories = ['kotowaza', 'kanyouku', 'kojiseigo'];
+            const difficulties = ['beginner', 'intermediate', 'advanced'];
+            
+            setTimeout(() => {
+                for (const cat of categories) {
+                    for (const diff of difficulties) {
+                        fetch(`./data/${cat}/${diff}.json`).catch(() => {});
+                    }
+                }
+            }, 1000);
         });
     </script>
     
@@ -1260,7 +1504,7 @@
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        // インストールボタンを表示する場合はここに処理を追加
+        // 将来的にインストールボタンを表示する場合はここに処理を追加
     });
     </script>
 </body>
