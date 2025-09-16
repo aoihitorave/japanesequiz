@@ -264,6 +264,13 @@
             line-height: 1.2;
         }
         
+        /* 主要アクションボタンエリア */
+        .primary-action-area {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
         .buttons {
             display: flex;
             gap: 12px;
@@ -655,16 +662,12 @@
             }
             
             .buttons {
-                flex-direction: column-reverse;
+                flex-direction: column;
             }
             
             .btn {
                 width: 100%;
                 padding: 11px 20px;
-            }
-            
-            .btn-primary {
-                order: -1;
             }
             
             .final-score {
@@ -754,6 +757,11 @@
                 </div>
             </div>
             
+            <!-- 次へボタンをここに配置 -->
+            <div class="primary-action-area">
+                <button class="btn btn-primary" id="categoryNextBtn" style="display:none;">次へ</button>
+            </div>
+            
             <!-- 免責事項 -->
             <div class="disclaimer-section">
                 <strong>ご利用にあたって</strong><br>
@@ -762,7 +770,6 @@
             </div>
             
             <div class="buttons">
-                <button class="btn btn-primary" id="categoryNextBtn" style="display:none;">次へ</button>
                 <button class="btn btn-success" id="installBtn" aria-label="インストール方法を表示">📱 インストール方法</button>
                 <button class="btn btn-info" id="aboutBtn" aria-label="アプリ情報を表示">ℹ️ アプリ情報</button>
             </div>
@@ -793,8 +800,13 @@
                     <div class="selection-desc">間違えたら即終了</div>
                 </div>
             </div>
-            <div class="buttons">
+            
+            <!-- 開始ボタンをここに配置 -->
+            <div class="primary-action-area">
                 <button class="btn btn-primary" id="startQuizBtn" style="display:none;">開始</button>
+            </div>
+            
+            <div class="buttons">
                 <button class="btn btn-secondary" id="backToCategoryBtn">戻る</button>
             </div>
         </div>
